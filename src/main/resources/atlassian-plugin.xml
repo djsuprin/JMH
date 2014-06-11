@@ -21,7 +21,7 @@
         <context>emailhandler</context>
     </web-resource>
     
-    <message-handler i18n-name-key="advancedCreateOrCommentHandler.name"
+    <message-handler i18n-name-key="Advanced Create Or Comment Handler"
 		key="advancedCreateOrCommentHandler"
 		class="cern.enice.jira.emailhandler.AdvancedCreateOrCommentHandler"
 		add-edit-url="/secure/admin/EditHandlerDetailsUsingParams!default.jspa"

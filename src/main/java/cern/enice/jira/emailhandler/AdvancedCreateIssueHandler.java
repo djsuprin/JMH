@@ -68,6 +68,12 @@ public class AdvancedCreateIssueHandler extends AbstractMessageHandler {
     private static final String KEY_ISSUETYPE = "issuetype";
     private static final String CC_ASSIGNEE = "ccassignee";
     private static final String KEY_COMPONENT = "component";
+    
+    //EXTERNAL WATCHERS
+    private static final String EXTERNAL_WATCHERS_ALLOWED_DOMAIN = "cern.ch";
+    private static final String EXTERNAL_WATCHERS_CUSTOM_FIELD_NAME = "External watchers";
+    private String firstSender; // sender's email (will go to the external watchers list)
+    private boolean senderUnknown = false;
 
     
     public void init(Map params, MessageHandlerErrorCollector monitor) {
@@ -258,7 +264,20 @@ public class AdvancedCreateIssueHandler extends AbstractMessageHandler {
                 CustomField customField = (CustomField) iterator.next();
                 issueObject.setCustomFieldValue(customField,  customField.getDefaultValue(issueObject));
             }
-
+            
+            // Set external watcher if unknown mail is from CERN domain
+            try {
+	    		String[] parsedSenderEmail = firstSender.split("@");
+	    		if (senderUnknown && parsedSenderEmail.length > 1 && parsedSenderEmail[1].toLowerCase().equals(EXTERNAL_WATCHERS_ALLOWED_DOMAIN)) {
+	    			CustomField externalWatchers = ComponentManager.getInstance().getCustomFieldManager().getCustomFieldObjectByName(EXTERNAL_WATCHERS_CUSTOM_FIELD_NAME);
+	    			issueObject.setCustomFieldValue(externalWatchers, firstSender);
+	    		} else {
+	    			log.debug("Don't need to set sender as an external watcher.");
+	    		}
+            } catch (Exception ex) {
+            	// Do nothing as project may not contain external watchers field
+            }
+            
             fields.put(WorkflowFunctionUtils.ORIGNAL_ISSUE_KEY, IssueImpl.getIssueObject(originalIssueGV));
             GenericValue issue = ManagerFactory.getIssueManager().createIssue(reporter, fields);
 
@@ -352,7 +371,7 @@ public class AdvancedCreateIssueHandler extends AbstractMessageHandler {
     	String createdVia = "";
     	
     	List<String> senders = MailUtils.getSenders(message);
-		String firstSender = null;
+		firstSender = null;
 		if (senders.size() > 0) {
 			firstSender = senders.get(0);
 		}
@@ -368,12 +387,15 @@ public class AdvancedCreateIssueHandler extends AbstractMessageHandler {
         }
 	
 		if (UserUtils.getUserByEmail(firstSender) == null) {
+			senderUnknown = true;
 			description = "{panel:bgColor=yellow}" +
 					"*WARNING* - the issue REPORTER was not initially a known JIRA user - " +
 					"it was automatically set to a generic support account, please correct this as necessary." +
 					createdVia +
 					"{panel}\n\n" + description;
+			
 		}
+		
     	
         // If the message has been created for an anonymous user add the senders e-mail address to the description.
         
