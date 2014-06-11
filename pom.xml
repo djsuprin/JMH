@@ -10,12 +10,12 @@
     <version>4.0</version>
 
     <organization>
-        <name>Example Company</name>
-        <url>http://www.example.com/</url>
+        <name>CERN</name>
+        <url>http://cern.ch/</url>
     </organization>
 
-    <name>emailhandler</name>
-    <description>This is the cern.enice.jira:emailhandler plugin for Atlassian JIRA.</description>
+    <name>Advanced Mail Handler</name>
+    <description>Advanced Mail Handler provides an extended set of features to create and comment issues by email.</description>
     <packaging>atlassian-plugin</packaging>
 
     <dependencies>
