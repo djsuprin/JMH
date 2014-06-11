@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cern.enice.jira</groupId>
     <artifactId>emailhandler</artifactId>
-    <version>4.0</version>
+    <version>4.0.1ew</version>
 
     <organization>
         <name>CERN</name>
@@ -15,7 +15,7 @@
     </organization>
 
     <name>Advanced Mail Handler</name>
-    <description>Advanced Mail Handler provides an extended set of features to create and comment issues by email.</description>
+    <description>Advanced Mail Handler provides an extended set of features to create and comment issues by email. External Watchers Build.</description>
     <packaging>atlassian-plugin</packaging>
 
     <dependencies>
